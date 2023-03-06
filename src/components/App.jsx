@@ -1,107 +1,77 @@
-import React, { Component } from 'react';
-
-// ========== components ==========
-
-import searchImages from '../services/api';
+import { Component } from 'react';
+import css from './App.module.css';
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Button from './Button/Button';
-import Modal from './Modal/Modal';
-import LargeImage from './LargeImage/LargeImage';
 import Loader from './Loader/Loader';
+import Modal from './Modal/Modal';
+import fetch from '../services/api';
 
-// ========== styles ==========
-
-import styles from './App.module.css';
-
-class App extends Component {
+export default class App extends Component {
   state = {
-    search: '',
+    nameImg: '',
     images: [],
     page: 1,
-    isLoading: false,
-    error: null,
-    showModal: false,
-    largeImage: '',
-    total: '',
+    isLoader: false,
+    isModal: false,
+    bigImg: '',
+  };
+
+  isSearchNameImg = nameImg => {
+    if (nameImg !== this.state.nameImg) {
+      this.setState({ nameImg, images: [], page: 1 });
+    }
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { search, page } = this.state;
-
-    if (prevState.search !== search || prevState.page !== page) {
-      this.setState({ isLoading: true });
-      this.fetchImages();
+    const { nameImg, page } = this.state;
+    if (prevState.nameImg !== nameImg || prevState.page !== page) {
+      this.isFetchImg();
     }
   }
 
-  async fetchImages() {
-    try {
-      const { images, search, page, total } = this.state;
-      const response = await searchImages(search, page, total);
-
-      const imagesInfo = response.hits.map(
-        ({ id, webformatURL, largeImageURL, tags }) => {
-          return {
-            id,
-            smallImg: webformatURL,
-            largeImg: largeImageURL,
-            descr: tags,
-          };
+  isFetchImg = () => {
+    const { nameImg, page } = this.state;
+    this.setState({ isLoader: true });
+    fetch(nameImg, page)
+      .then(({ data }) => {
+        if (data.total === 0) {
+          return alert('There are no images for this request, try again');
         }
-      );
-
-      const totalImgs = response.totalHits;
-
-      this.setState({ images: [...images, ...imagesInfo], total: totalImgs });
-    } catch (error) {
-      this.setState({ error: error.message });
-    } finally {
-      this.setState({ isLoading: false });
-    }
-  }
-
-  searchImages = ({ search }) => {
-    this.setState({ search, images: [], page: 1 });
+        this.setState(prevState => {
+          return { images: [...prevState.images, ...data.hits] };
+        });
+      })
+      .catch(error => console.log(error.message))
+      .finally(() => this.setState({ isLoader: false }));
   };
 
-  onLoadMore = () => {
-    const { page } = this.state;
-    this.setState({ page: page + 1 });
+  isChangePage = () => {
+    this.setState(prevState => {
+      return { page: prevState.page + 1 };
+    });
   };
-
-  onModalOpen = ({ largeImg, alt }) => {
-    this.setState({ largeImage: { largeImg, alt }, showModal: true });
+  isOpenModal = img => {
+    this.setState({ isModal: true });
+    this.setState({ bigImg: img });
+    return img;
   };
-
-  onModalCLose = () => {
-    this.setState({ showModal: false, largeImage: '' });
+  isCloseModal = () => {
+    this.setState({ isModal: false });
   };
 
   render() {
-    const { search, images, isLoading, total, error, showModal, largeImage } =
-      this.state;
-
+    const { images, isLoader, isModal, bigImg } = this.state;
     return (
-      <div className={styles.app}>
-        <Searchbar onSubmit={this.searchImages} />
-        {search && <ImageGallery items={images} openModal={this.onModalOpen} />}
-        {error && <p>{error}</p>}
-        {isLoading && <Loader />}
-        {images.length < total && !isLoading && (
-          <div className={styles.buttonWrap}>
-            <Button clickHandler={this.onLoadMore} />
-          </div>
-        )}
-
-        {showModal && (
-          <Modal closeModal={this.onModalCLose}>
-            <LargeImage {...largeImage} />
-          </Modal>
-        )}
+      <div className={css.App}>
+        <Searchbar onSubmit={this.isSearchNameImg} />
+        <div>
+          <ImageGallery gallery={images} bigImg={this.isOpenModal} />
+          {images.length >= 12 && <Button onClick={this.isChangePage} />}
+          {isLoader && <Loader />}
+        </div>
+        {isModal && <Modal bigImg={bigImg} close={this.isCloseModal} />}
       </div>
     );
   }
 }
-
-export default App;

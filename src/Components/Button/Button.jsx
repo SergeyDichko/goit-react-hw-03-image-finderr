@@ -1,17 +1,16 @@
 import PropTypes from 'prop-types';
+import css from './Button.module.css';
 
-// ========== styles ==========
+export default function Button({onClick}) {
+  return (
+    
+        <button type="button" className={css.button} onClick={()=>{onClick()}}>
+          Load more
+        </button>
 
-import styles from './Button.module.css';
-
-const Button = ({ clickHandler }) => (
-  <button className={styles.button} type="button" onClick={clickHandler}>
-    Load more
-  </button>
-);
-
-export default Button;
-
-Button.propTypes = {
-  clickHandler: PropTypes.func.isRequired,
-};
+        
+  );
+}
+Button.propTypes ={
+	onClick:PropTypes.func.isRequired,
+}

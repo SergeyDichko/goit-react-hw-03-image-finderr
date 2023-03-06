@@ -1,25 +1,5 @@
-import PropTypes from 'prop-types';
+import css from './ImageGalleryItem.module.css';
 
-// ========== styles ==========
-
-import styles from './ImageGalleryItem.module.css';
-
-const ImageGalleryItem = ({ img, largeImg, alt, onImgClick }) => (
-  <li
-    className={styles.imageGalleryItem}
-    onClick={() => {
-      onImgClick({ largeImg, alt });
-    }}
-  >
-    <img className={styles.imageGalleryItem_image} src={img} alt={alt} />
-  </li>
-);
-
-export default ImageGalleryItem;
-
-ImageGalleryItem.propTypes = {
-  img: PropTypes.string.isRequired,
-  largeImg: PropTypes.string.isRequired,
-  alt: PropTypes.string.isRequired,
-  onImgClick: PropTypes.func.isRequired,
-};
+export default function ImageGalleryItem({ alt, src }) {
+  return <img src={src} alt={alt} className={css.image} />;
+}

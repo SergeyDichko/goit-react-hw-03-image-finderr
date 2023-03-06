@@ -1,34 +1,33 @@
 import PropTypes from 'prop-types';
-
-// ========== components ==========
-
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
+import css from './ImageGallery.module.css';
 
-// ========== styles ==========
-
-import styles from './ImageGallery.module.css';
-
-const ImageGallery = ({ items, openModal }) => (
-  <ul className={styles.imageGallery}>
-    {items.map(({ id, smallImg, largeImg, descr }) => (
-      <ImageGalleryItem
-        key={id}
-        id={id}
-        img={smallImg}
-        alt={descr}
-        largeImg={largeImg}
-        onImgClick={openModal}
-      />
-    ))}
-  </ul>
-);
-
-export default ImageGallery;
-
-ImageGallery.defaultProps = {
-  items: [],
-};
-
+export default function ImageGallery({ gallery, bigImg }) {
+  return (
+    <ul className={css.gallery}>
+      {gallery.map(({ id, tags, webformatURL, largeImageURL }) => {
+        return (
+          <li
+            key={id}
+            className={css.item}
+            onClick={() => {
+              bigImg(largeImageURL);
+            }}
+          >
+            <ImageGalleryItem alt={tags} src={webformatURL} />
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
 ImageGallery.propTypes = {
-  openModal: PropTypes.func.isRequired,
+  bigImg: PropTypes.func.isRequired,
+  gallery: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      tags: PropTypes.string.isRequired,
+      webformatURL: PropTypes.string.isRequired,
+    }).isRequired
+  ).isRequired,
 };
