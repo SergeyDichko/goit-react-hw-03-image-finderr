@@ -26,6 +26,7 @@ class Searchbar extends Component {
   //   this.setState({ search: '' });
   // }
 
+
   render() {
     const { search } = this.state;
     const { handleChange, handleSubmit } = this;
