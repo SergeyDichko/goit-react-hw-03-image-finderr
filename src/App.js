@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Loader from "react-loader-spinner";
+// import Loader from "react-loader-spinner";
 import * as API from "../src/Gofetch/FetchService";
 import Searchbar from "./Components/Searchbar";
 import ImageGallery from "./Components//ImageGallery/ImageGallery";
@@ -99,7 +99,7 @@ class App extends Component {
             modalFn={this.openLargeImage}
           ></ImageGallery>
         )}
-        {this.state.showLoader && <Loader />}
+        {this.state.showLoader}
         {this.state.searchWords !== "" && <Button fn={this.loadMoreFn} />}
       </div>
     );
