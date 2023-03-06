@@ -100,7 +100,7 @@ class App extends Component {
           ></ImageGallery>
         )}
         {this.state.showLoader}
-        {this.state.searchWords !== "" && <Button fn={this.loadMoreFn} />}
+        {this.state.searchWords === "" && <Button fn={this.loadMoreFn} />}
       </div>
     );
   }
