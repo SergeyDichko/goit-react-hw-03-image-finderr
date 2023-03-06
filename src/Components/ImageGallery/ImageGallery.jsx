@@ -1,36 +1,34 @@
-import React, { Component } from "react";
+import PropTypes from 'prop-types';
 
-import ImageGalleryItem from "../ImageGalleryItem/ImageGalleryItem";
-import propTypes from "prop-types";
+// ========== components ==========
 
-class ImageGallery extends Component {
-  static defaultProps = { imagesArray: propTypes.array };
-  static propTypes = {
-    loader: propTypes.func,
-    imagesArray: propTypes.array,
-    modalFn: propTypes.func,
-  };
-  componentDidMount() {
-    this.props.loader(true);
-  }
+import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 
-  render() {
-    return (
-      <ul className="ImageGallery">
-        {this.props.imagesArray.map((image, idx) => {
-          return (
-            <ImageGalleryItem
-              key={image.id}
-              imageLink={image.webformatURL}
-              imagAlt={image.tags}
-              largeImageURL={image.largeImageURL}
-              modalFn={this.props.modalFn}
-            />
-          );
-        })}
-      </ul>
-    );
-  }
-}
+// ========== styles ==========
+
+import styles from './ImageGallery.module.css';
+
+const ImageGallery = ({ items, openModal }) => (
+  <ul className={styles.imageGallery}>
+    {items.map(({ id, smallImg, largeImg, descr }) => (
+      <ImageGalleryItem
+        key={id}
+        id={id}
+        img={smallImg}
+        alt={descr}
+        largeImg={largeImg}
+        onImgClick={openModal}
+      />
+    ))}
+  </ul>
+);
 
 export default ImageGallery;
+
+ImageGallery.defaultProps = {
+  items: [],
+};
+
+ImageGallery.propTypes = {
+  openModal: PropTypes.func.isRequired,
+};

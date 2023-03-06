@@ -1,32 +1,25 @@
-import React, { Component } from "react";
-import propTypes from "prop-types";
+import PropTypes from 'prop-types';
 
-class ImageGalleryItem extends Component {
-  static defaultProps = { imageLink: " ", imageAlt: " " };
+// ========== styles ==========
 
-  static propTypes = {
-    imageLink: propTypes.string,
-    imageAlt: propTypes.string,
-    largeImageURL: propTypes.string,
-    modalFn: propTypes.func,
-  };
+import styles from './ImageGalleryItem.module.css';
 
-  render() {
-    return (
-      <li className="ImageGalleryItem">
-        <img
-          onClick={(e) => {
-            this.props.modalFn(e.target.attributes[2].value);
-            console.log(e);
-          }}
-          src={this.props.imageLink}
-          alt={this.props.imageAlt}
-          data-large={this.props.largeImageURL}
-          className="ImageGalleryItem-image"
-        />
-      </li>
-    );
-  }
-}
+const ImageGalleryItem = ({ img, largeImg, alt, onImgClick }) => (
+  <li
+    className={styles.imageGalleryItem}
+    onClick={() => {
+      onImgClick({ largeImg, alt });
+    }}
+  >
+    <img className={styles.imageGalleryItem_image} src={img} alt={alt} />
+  </li>
+);
 
 export default ImageGalleryItem;
+
+ImageGalleryItem.propTypes = {
+  img: PropTypes.string.isRequired,
+  largeImg: PropTypes.string.isRequired,
+  alt: PropTypes.string.isRequired,
+  onImgClick: PropTypes.func.isRequired,
+};

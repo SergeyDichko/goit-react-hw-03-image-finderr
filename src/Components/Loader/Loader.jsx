@@ -1,15 +1,21 @@
-import React, { Component } from "react";
-import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
-import Loader from "react-loader-spinner";
+import { Vortex } from 'react-loader-spinner';
 
-export default class App extends Component {
-  state = {};
+// ========== styles ==========
 
-  render() {
-    return (
-      <div>
-        <Loader type="Puff" color="#3f51b5" height={100} width={100} />
-      </div>
-    );
-  }
-}
+import styles from './Loader.module.css';
+
+const Loader = () => (
+  <div className={styles.loader}>
+    <Vortex
+      visible={true}
+      height="80"
+      width="80"
+      ariaLabel="vortex-loading"
+      wrapperStyle={{}}
+      wrapperClass="vortex-wrapper"
+      colors={'#3f51b5'}
+    />
+  </div>
+);
+
+export default Loader;
